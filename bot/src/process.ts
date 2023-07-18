@@ -20,14 +20,16 @@ export const runPuppeteer = async () => {
 
     await page.click("#acao");
 
-    await page.waitForNavigation();
-
-    const html = await page.content();
     await page.waitForSelector("#paginacao");
-
+    const html = await page.content();
+    
     const root = parse(html);
-    console.log(root.querySelector("#paginacao"));
 
+    const infra = await page.waitForSelector('.descricaoAIT');
+    const value = await page.evaluate((el) => el.textContent, infra);
+
+    console.log(value)
+    
     await browser.close();
 
   } catch (error) {
