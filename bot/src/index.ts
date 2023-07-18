@@ -1,3 +1,3 @@
-import { runPuppeteer } from "./controllers/puppeteerController";
+import { runPuppeteer } from "./process";
 
 runPuppeteer();
