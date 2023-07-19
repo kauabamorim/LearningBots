@@ -8,7 +8,7 @@ export const runPuppeteer = async () => {
   try {
     // Inicializa
     // headless: faz com que abra o navegador
-
+    
     for (let index = 0; index < 2; index++) {
       const browser = await puppeteer.launch({
         headless: false,
@@ -27,48 +27,47 @@ export const runPuppeteer = async () => {
 
       if (await page.waitForSelector("#paginacao").catch(() => false)) {
         await page.waitForSelector("#paginacao");
-      const html = await page.content();
+        const html = await page.content();
 
-      const root = parse(html);
-      const tableElement = root.querySelector(".descricaoAIT table");
+        const root = parse(html);
+        const tableElement = root.querySelector(".descricaoAIT table");
 
-      if (tableElement) {
-        const cells = tableElement.querySelectorAll("td");
-        const numberInfraction = root.querySelector('.numeroAIT')?.textContent?.trim() || '';
-        const datetime = cells[1].textContent.trim();
-        const county = cells[5].textContent.trim();
-        const infringement = cells[7].textContent.trim();
-        const situation = cells[9].textContent.trim();
+        if (tableElement) {
+          const cells = tableElement.querySelectorAll("td");
+          const numberInfraction = root.querySelector(".numeroAIT")?.textContent?.trim() || "";
+          const datetime = cells[1].textContent.trim();
+          const county = cells[5].textContent.trim();
+          const infringement = cells[7].textContent.trim();
+          const situation = cells[9].textContent.trim();
 
-        console.log("========== Consulta 0" + [index + 1] + " ==========")
-        console.log("Número da infração:", numberInfraction);
-        console.log("Data e Hora:", datetime);
-        console.log("Município:", county);
-        console.log("Infração:", infringement);
-        console.log("Situação:", situation);
-      }
-
-      } 
-      else {
-        const tituloNadaConstaElement = await page.waitForSelector(".tituloNadaConsta");
+          console.log("========== Consulta 0" + [index + 1] + " ==========");
+          console.log("Número da infração:", numberInfraction);
+          console.log("Data e Hora:", datetime);
+          console.log("Município:", county);
+          console.log("Infração:", infringement);
+          console.log("Situação:", situation);
+        }
+      } else {
+        const tituloNadaConstaElement = await page.waitForSelector(
+          ".tituloNadaConsta"
+        );
         if (tituloNadaConstaElement) {
           const html = await page.content();
 
           const root = parse(html);
 
-          const element = root.querySelector(".tituloNadaConsta")?.textContent.trim();
+          const element = root
+            .querySelector(".tituloNadaConsta")
+            ?.textContent.trim();
 
-          console.log("========== Consulta 0" + [index + 1] + " ==========")
+          console.log("========== Consulta 0" + [index + 1] + " ==========");
           console.log(element);
-
-        } 
-        else {
+        } else {
           console.log("Seletor não encontrado");
         }
       }
 
       await browser.close();
-
     }
   } catch (error) {
     console.log(error);
