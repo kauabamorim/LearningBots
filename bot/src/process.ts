@@ -25,7 +25,8 @@ export const runPuppeteer = async () => {
 
       await page.click("#acao");
 
-      await page.waitForSelector("#paginacao");
+      if (await page.waitForSelector("#paginacao").catch(() => false)) {
+        await page.waitForSelector("#paginacao");
       const html = await page.content();
 
       const root = parse(html);
@@ -46,17 +47,26 @@ export const runPuppeteer = async () => {
         console.log("Situação:", situacao);
       }
 
-      // const tabelaElemento = root.querySelector(".descricaoAIT table");
-      // if (tabelaElemento) {
-      //   const cells = tabelaElemento.querySelectorAll("td");
-      //   cells.forEach((cell, index) => {
-      //     const cellValue = cell.textContent.trim();
-      //     console.log(`Índice da célula: ${index}`);
-      //     console.log("Valor da célula:", cellValue);
-      //   });
-      // }
+      } 
+      else {
+        const tituloNadaConstaElement = await page.waitForSelector(".tituloNadaConsta");
+        if (tituloNadaConstaElement) {
+          const html = await page.content();
+
+          const root = parse(html);
+
+          const tableElement = root.querySelector(".tituloNadaConsta")?.textContent.trim();
+
+          console.log(tableElement);
+
+        } 
+        else {
+          console.log("Seletor não encontrado");
+        }
+      }
 
       await browser.close();
+
     }
   } catch (error) {
     console.log(error);
