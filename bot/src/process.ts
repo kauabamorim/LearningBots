@@ -34,17 +34,18 @@ export const runPuppeteer = async () => {
 
       if (tableElement) {
         const cells = tableElement.querySelectorAll("td");
-        const numeroInfracao = root.querySelector('.numeroAIT')?.textContent?.trim() || '';
-        const dataHora = cells[1].textContent.trim();
-        const municipio = cells[5].textContent.trim();
-        const infracao = cells[7].textContent.trim();
-        const situacao = cells[9].textContent.trim();
+        const numberInfraction = root.querySelector('.numeroAIT')?.textContent?.trim() || '';
+        const datetime = cells[1].textContent.trim();
+        const county = cells[5].textContent.trim();
+        const infringement = cells[7].textContent.trim();
+        const situation = cells[9].textContent.trim();
 
-        console.log("Número da infração:", numeroInfracao);
-        console.log("Data e Hora:", dataHora);
-        console.log("Município:", municipio);
-        console.log("Infração:", infracao);
-        console.log("Situação:", situacao);
+        console.log("========== Consulta 0" + [index + 1] + " ==========")
+        console.log("Número da infração:", numberInfraction);
+        console.log("Data e Hora:", datetime);
+        console.log("Município:", county);
+        console.log("Infração:", infringement);
+        console.log("Situação:", situation);
       }
 
       } 
@@ -55,9 +56,10 @@ export const runPuppeteer = async () => {
 
           const root = parse(html);
 
-          const tableElement = root.querySelector(".tituloNadaConsta")?.textContent.trim();
+          const element = root.querySelector(".tituloNadaConsta")?.textContent.trim();
 
-          console.log(tableElement);
+          console.log("========== Consulta 0" + [index + 1] + " ==========")
+          console.log(element);
 
         } 
         else {
