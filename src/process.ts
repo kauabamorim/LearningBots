@@ -14,10 +14,13 @@ export const runPuppeteer = async () => {
         headless: false,
       });
 
+      // Abre uma nova guia
       const page = await browser.newPage();
 
+      // Vai para a URL
       await page.goto("http://smt.derba.ba.gov.br:8180/smt/home.action");
 
+      // Espera o id aparecer
       await page.waitForSelector("#renavam");
 
       await page.type("#renavam", renavams[index]);
