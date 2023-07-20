@@ -1,5 +1,6 @@
 import puppeteer from "puppeteer";
 import parse from "node-html-parser";
+import axios from "axios";
 import {PDFExtract, PDFExtractOptions} from 'pdf.js-extract';
 
 let document: any;
