@@ -1,6 +1,6 @@
 import puppeteer from "puppeteer";
 import parse from "node-html-parser";
-import { PDFExtract } from "pdf.js-extract";
+import {PDFExtract, PDFExtractOptions} from 'pdf.js-extract';
 
 let document: any;
 
@@ -33,9 +33,10 @@ export const runPuppeteer = async () => {
 
       if (await page.waitForSelector("#paginacao").catch(() => false)) {
         await page.waitForSelector("#paginacao");
-        const html = await page.content();
 
+        const html = await page.content();
         const root = parse(html);
+
         const paginacao = root.querySelector(".descricaoAIT table");
 
         let numberInfraction,
@@ -49,7 +50,7 @@ export const runPuppeteer = async () => {
           numberInfraction = root.querySelector(".numeroAIT")?.textContent?.trim() || "";
           datetime = cells[1].textContent.trim();
           county = cells[5].textContent.trim();
-          infringement = cells[7].textContent.trim().split("br");
+          infringement = cells[7].innerText.split("\n");
           situation = cells[9].textContent.trim();
         }
 
@@ -64,11 +65,18 @@ export const runPuppeteer = async () => {
         }
 
         await page.click('.botoesAIT a[title="Imprimir 2a Via"]');
-        
+
         await page.waitForNavigation();
-        
+
+        // const teste = await page.pdf();
+
+        // const pdfsExtract = new PDFExtract();
+
+        //extractBuffer
+        // const pdf = pdfsExtract.extractBuffer(teste);
+
         console.log("========== Consulta 0" + [index + 1] + " ==========");
-        console.log("Número da infração:", numberInfraction + " " + infringement);
+        console.log("Multa - ", numberInfraction + " - " + infringement);
         console.log("Data e Hora:", datetime);
         console.log("Município:", county);
         console.log("Situacao: ", situation);
