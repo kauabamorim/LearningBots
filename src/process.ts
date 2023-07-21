@@ -69,31 +69,33 @@ export const runPuppeteer = async () => {
 
         await page.click('.botoesAIT a[title="Imprimir 2a Via"]');
 
-        const cookies = await page.cookies();
+        const urlpage2Via = page.url();
 
-        cookies.forEach((cookie) => {
-          const { name, value } = cookie;
-          console.log(`${name}=${value};`);
-        });
+        const getCookie = await page.cookies();
 
+        const cookies = getCookie.map((cookie) => `${cookie.name}=${cookie.value}`).join('; ');
+
+        console.log(cookies)
+        
         const pdfExtract = new PDFExtract();
-
+        
         try {
-          const response = await axios.get(
-            "http://smt.derba.ba.gov.br:8180/smt/notificacao.action?autoInfracao.nuSeqAutoInfracao=6344950&autoInfracao.cdTipoNotificacao=1&acao=imprimir",
+          const response = await axios.get(urlpage2Via,
             {
               // responseType: 'arraybuffer',
               headers: {
-                // 'Cookie': cookies,
+                'Cookie': cookies,
               },
             }
           );
           const fileData = Buffer.from(response.data, "binary");
-          await fs.writeFile("./file.pdf", fileData);
+          await fs.writeFile("./temp/notificacao.pdf", fileData);
           console.log("PDF file saved!");
         } catch (err) {
           console.error(err);
         }
+        
+        // fs.unlink("./temp/notificacao.pdf");
 
         console.log("========== Consulta 0" + [index + 1] + " ==========");
         console.log("Multa - ", numberInfraction + " - " + infringement);
