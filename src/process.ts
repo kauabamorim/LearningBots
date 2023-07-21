@@ -1,7 +1,8 @@
 import puppeteer from "puppeteer";
 import parse from "node-html-parser";
-import axios, { AxiosResponse } from "axios";
+import axios from "axios";
 import { PDFExtract, PDFExtractOptions } from "pdf.js-extract";
+import fs from "fs/promises";
 
 let document: any;
 
@@ -68,9 +69,31 @@ export const runPuppeteer = async () => {
 
         await page.click('.botoesAIT a[title="Imprimir 2a Via"]');
 
-        await page.waitForNavigation();
-        
-        const pdfsExtract = new PDFExtract();
+        const cookies = await page.cookies();
+
+        cookies.forEach((cookie) => {
+          const { name, value } = cookie;
+          console.log(`${name}=${value};`);
+        });
+
+        const pdfExtract = new PDFExtract();
+
+        try {
+          const response = await axios.get(
+            "http://smt.derba.ba.gov.br:8180/smt/notificacao.action?autoInfracao.nuSeqAutoInfracao=6344950&autoInfracao.cdTipoNotificacao=1&acao=imprimir",
+            {
+              // responseType: 'arraybuffer',
+              headers: {
+                // 'Cookie': cookies,
+              },
+            }
+          );
+          const fileData = Buffer.from(response.data, "binary");
+          await fs.writeFile("./file.pdf", fileData);
+          console.log("PDF file saved!");
+        } catch (err) {
+          console.error(err);
+        }
 
         console.log("========== Consulta 0" + [index + 1] + " ==========");
         console.log("Multa - ", numberInfraction + " - " + infringement);
