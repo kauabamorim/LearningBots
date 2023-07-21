@@ -72,29 +72,27 @@ export const runPuppeteer = async () => {
         const urlpage2Via = page.url();
 
         const getCookie = await page.cookies();
-
         const cookies = getCookie.map((cookie) => `${cookie.name}=${cookie.value}`).join('; ');
-
-        console.log(cookies)
+        console.log(urlpage2Via)
         
         const pdfExtract = new PDFExtract();
         
         try {
           const response = await axios.get(urlpage2Via,
             {
-              // responseType: 'arraybuffer',
+              responseType: 'arraybuffer',
               headers: {
                 'Cookie': cookies,
               },
             }
           );
-          const fileData = Buffer.from(response.data, "binary");
-          await fs.writeFile("./temp/notificacao.pdf", fileData);
+          await fs.writeFile("./src/temp/notificacao.pdf", response.data);
           console.log("PDF file saved!");
         } catch (err) {
           console.error(err);
         }
-        
+
+
         // fs.unlink("./temp/notificacao.pdf");
 
         console.log("========== Consulta 0" + [index + 1] + " ==========");
