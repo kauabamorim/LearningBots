@@ -1,7 +1,7 @@
 import puppeteer from "puppeteer";
 import parse from "node-html-parser";
-import axios from "axios";
-import {PDFExtract, PDFExtractOptions} from 'pdf.js-extract';
+import axios, { AxiosResponse } from "axios";
+import { PDFExtract, PDFExtractOptions } from "pdf.js-extract";
 
 let document: any;
 
@@ -48,40 +48,35 @@ export const runPuppeteer = async () => {
 
         if (paginacao) {
           const cells = paginacao.querySelectorAll("td");
-          numberInfraction = root.querySelector(".numeroAIT")?.textContent?.trim() || "";
+          numberInfraction =
+            root.querySelector(".numeroAIT")?.textContent?.trim() || "";
           datetime = cells[1].textContent.trim();
           county = cells[5].textContent.trim();
           infringement = cells[7].innerText.split("\n");
           situation = cells[9].textContent.trim();
         }
 
-        const paginacaoPDF = root.querySelector('.botoesAIT ul li a');
+        const paginacaoPDF = root.querySelector(".botoesAIT ul li a");
 
         // Injetando Script (F12 Browser)
         if (paginacaoPDF) {
           await page.evaluate(() => {
-              const paginacao = document.querySelector(".botoesAIT ul li a");
-              paginacao.removeAttribute('target');
+            const paginacao = document.querySelector(".botoesAIT ul li a");
+            paginacao.removeAttribute("target");
           });
         }
 
         await page.click('.botoesAIT a[title="Imprimir 2a Via"]');
 
         await page.waitForNavigation();
-
-        // const teste = await page.pdf();
-
-        // const pdfsExtract = new PDFExtract();
-
-        //extractBuffer
-        // const pdf = pdfsExtract.extractBuffer(teste);
+        
+        const pdfsExtract = new PDFExtract();
 
         console.log("========== Consulta 0" + [index + 1] + " ==========");
         console.log("Multa - ", numberInfraction + " - " + infringement);
         console.log("Data e Hora:", datetime);
         console.log("Município:", county);
         console.log("Situacao: ", situation);
-
       } else {
         const tituloNadaConstaElement = await page.waitForSelector(
           ".tituloNadaConsta"
