@@ -72,28 +72,28 @@ export const runPuppeteer = async () => {
         const urlpage2Via = page.url();
 
         const getCookie = await page.cookies();
-        const cookies = getCookie.map((cookie) => `${cookie.name}=${cookie.value}`).join('; ');
-        console.log(urlpage2Via)
-        
+        const cookies = getCookie
+          .map((cookie) => `${cookie.name}=${cookie.value}`)
+          .join("; ");
+
         const pdfExtract = new PDFExtract();
-        
+
         try {
-          const response = await axios.get(urlpage2Via,
-            {
-              responseType: 'arraybuffer',
-              headers: {
-                'Cookie': cookies,
-              },
-            }
-          );
-          await fs.writeFile("./src/temp/notificacao.pdf", response.data);
-          console.log("PDF file saved!");
+          const response = await axios.get(urlpage2Via, {
+            responseType: "arraybuffer",
+            headers: {
+              Cookie: cookies,
+            },
+          });
+          
+          const pdfData = response.data;
+          const extractedData = await pdfExtract.extractBuffer(pdfData, { firstPage: 0 });
+      
+          // console.log(extractedData.pages[0].content);
+
         } catch (err) {
           console.error(err);
         }
-
-
-        // fs.unlink("./temp/notificacao.pdf");
 
         console.log("========== Consulta 0" + [index + 1] + " ==========");
         console.log("Multa - ", numberInfraction + " - " + infringement);
@@ -120,7 +120,7 @@ export const runPuppeteer = async () => {
         }
       }
 
-      // await browser.close();
+      await browser.close();
     }
   } catch (error) {
     console.log(error);
