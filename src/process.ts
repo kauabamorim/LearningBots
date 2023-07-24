@@ -85,21 +85,27 @@ export const runPuppeteer = async () => {
               Cookie: cookies,
             },
           });
-          
+        
           const pdfData = response.data;
           const extractedData = await pdfExtract.extractBuffer(pdfData, { firstPage: 0 });
-      
-          console.log(extractedData.pages[0].content);
+
+          const value = extractedData.pages[0].content.filter((pdfContent) => pdfContent.x === 250 && pdfContent.y === 532.44).map(item => item.str);
+          const measurementDate = extractedData.pages[0].content.filter((pdfContent) => pdfContent.x === 247 && pdfContent.y === 552.44).map(item => item.str);
+          const numberItems = extractedData.pages[0].content.filter((pdfContent) => pdfContent.x === 320 && pdfContent.y === 552.44).map(item => item.str);
+
+          console.log("========== Consulta 0" + [index + 1] + " ==========");
+          console.log("Multa - ", numberInfraction + " - " + infringement);
+          console.log("Data e Hora:", datetime);
+          console.log("Município:", county);
+          console.log("Situacao: ", situation);
+          console.log('Valor:', value);
+          console.log('Data Aferição:', measurementDate);
+          console.log('Número:', numberItems);
 
         } catch (err) {
           console.error(err);
         }
-
-        console.log("========== Consulta 0" + [index + 1] + " ==========");
-        console.log("Multa - ", numberInfraction + " - " + infringement);
-        console.log("Data e Hora:", datetime);
-        console.log("Município:", county);
-        console.log("Situacao: ", situation);
+        
       } else {
         const tituloNadaConstaElement = await page.waitForSelector(
           ".tituloNadaConsta"
