@@ -89,7 +89,7 @@ export const runPuppeteer = async () => {
           const pdfData = response.data;
           const extractedData = await pdfExtract.extractBuffer(pdfData, { firstPage: 0 });
 
-          const value = extractedData.pages[0].content.filter((pdfContent) => pdfContent.x === 250 && pdfContent.y === 532.44).map(item => item.str);
+          const value = Number(extractedData.pages[0].content.filter((pdfContent) => pdfContent.x === 250 && pdfContent.y === 532.44)[1].str.replace(/,/, ""));
           const measurementDate = extractedData.pages[0].content.filter((pdfContent) => pdfContent.x === 247 && pdfContent.y === 552.44).map(item => item.str);
           const numberItems = extractedData.pages[0].content.filter((pdfContent) => pdfContent.x === 320 && pdfContent.y === 552.44).map(item => item.str);
 
