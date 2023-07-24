@@ -2,7 +2,6 @@ import puppeteer from "puppeteer";
 import parse from "node-html-parser";
 import axios from "axios";
 import { PDFExtract, PDFExtractOptions } from "pdf.js-extract";
-import fs from "fs/promises";
 
 let document: any;
 
@@ -13,7 +12,6 @@ export const runPuppeteer = async () => {
   try {
     // Inicializa
     // headless: faz com que abra o navegador
-
     for (let index = 0; index < 2; index++) {
       const browser = await puppeteer.launch({
         headless: false,
@@ -33,7 +31,7 @@ export const runPuppeteer = async () => {
 
       await page.click("#acao");
 
-      if (await page.waitForSelector("#paginacao").catch(() => false)) {
+      if (await page.waitForSelector("#paginacao", {timeout: 6000}).catch(() => false)) {
         await page.waitForSelector("#paginacao");
 
         const html = await page.content();
@@ -94,7 +92,7 @@ export const runPuppeteer = async () => {
           const numberItems = extractedData.pages[0].content.filter((pdfContent) => pdfContent.x === 320 && pdfContent.y === 552.44).map(item => item.str);
 
           console.log("========== Consulta 0" + [index + 1] + " ==========");
-          console.log("Multa - ", numberInfraction + " - " + infringement);
+          console.log("Multa -", numberInfraction + " - " + infringement);
           console.log("Data e Hora:", datetime);
           console.log("Município:", county);
           console.log("Situacao: ", situation);
