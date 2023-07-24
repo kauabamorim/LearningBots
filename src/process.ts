@@ -47,16 +47,16 @@ export const runPuppeteer = async () => {
           infringement,
           situation = "";
 
-        if (paginacao) {
-          const cells = paginacao.querySelectorAll("td");
-          numberInfraction =
-            root.querySelector(".numeroAIT")?.textContent?.trim() || "";
-          datetime = cells[1].textContent.trim();
-          county = cells[5].textContent.trim();
-          infringement = cells[7].innerText.split("\n");
-          situation = cells[9].textContent.trim();
-        }
-
+          if (paginacao) {
+            const cells = paginacao.querySelectorAll("td");
+            numberInfraction = root.querySelector(".numeroAIT")?.textContent?.trim() || "";
+            datetime = cells[1].textContent.trim();
+            county = cells[5].textContent.trim();
+            infringement = cells[7].innerText.split("\n").map(item => item.trim());
+            situation = cells[9].textContent.trim();
+            infringement = infringement[1];
+          }
+          
         const paginacaoPDF = root.querySelector(".botoesAIT ul li a");
 
         // Injetando Script (F12 Browser)
@@ -89,7 +89,7 @@ export const runPuppeteer = async () => {
           const pdfData = response.data;
           const extractedData = await pdfExtract.extractBuffer(pdfData, { firstPage: 0 });
       
-          // console.log(extractedData.pages[0].content);
+          console.log(extractedData.pages[0].content);
 
         } catch (err) {
           console.error(err);
